@@ -1,21 +1,29 @@
-import React from 'react';
+// src/components/Products/Products.js
+import React, { useEffect, useState } from 'react';
 
-function Product({ image, name, price, description, rating }) {
+function Products() {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:3001/cafes')
+            .then(response => response.json())
+            .then(data => setProducts(data))
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
+
     return (
-        <div className="product">
-            <img src={image} alt={name} />
-            <h3>{name}</h3>
-            <p>Precio: {price} COP</p>
-            <p>{description}</p>
-            <div className="rating">
-                {Array.from({ length: rating }).map((_, index) => (
-                    <span key={index}>⭐</span>
-                ))}
-            </div>
-            <button>Agregar al Carrito</button>
-            <button>Ver Detalles</button>
-        </div>
+        <section className="content">
+            <h2>Nuestros Productos</h2>
+            {products.map((product, index) => (
+                <div className="product" key={index}>
+                    <img src={`path_to_image/${product.image}`} alt={product.nombreCafe} />
+                    <h3>{product.nombreCafe}</h3>
+                    <p>Precio: {product.precio} COP</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+            ))}
+        </section>
     );
 }
 
-export default Product;
+export default Products;

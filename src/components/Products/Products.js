@@ -1,14 +1,31 @@
-// src/components/Products/Products.js
 import React, { useEffect, useState } from 'react';
 
 function Products() {
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:3001/cafes')
-            .then(response => response.json())
-            .then(data => setProducts(data));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setProducts(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setError(error);
+                setLoading(false);
+            });
     }, []);
+
+    if (loading) return <p>Cargando...</p>;
+    if (error) return <p>Error al cargar los datos.</p>;
 
     return (
         <section className="content">

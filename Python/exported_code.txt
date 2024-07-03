@@ -1,0 +1,449 @@
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Clientes\Clientes.js
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+function Clientes() {
+  const [clientes, setClientes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/clientes')
+      .then(response => {
+        setClientes(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error al cargar los datos.</p>;
+
+  return (
+    <div>
+      <h2>Clientes</h2>
+      <ul>
+        {clientes.map(cliente => (
+          <li key={cliente._id}>{cliente.nombre} - {cliente.direccion}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default Clientes;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Clientes\Clientes.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Header\Header.js
+import React from 'react';
+
+function Header() {
+    return (
+        <header>
+            <h1>JENCAFE - Tienda Virtual de Café</h1>
+        </header>
+    );
+}
+
+export default Header;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Header\Header.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Home\Home.js
+import React from 'react';
+
+function Home() {
+    return (
+        <section className="content">
+            <h2>Bienvenido a JENCAFE</h2>
+            <p>
+                Descubre los mejores productos de café seleccionados especialmente para ti. Nuestra tienda virtual ofrece una
+                variedad de cafés de alta calidad, desde los más tradicionales hasta los más exquisitos.
+            </p>
+            <p>
+                Navega por nuestras categorías y encuentra el café perfecto para cada ocasión. ¡Disfruta de una experiencia
+                única con el mejor café!
+            </p>
+        </section>
+    );
+}
+
+export default Home;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Home\Home.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Login\Login.js
+
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+
+function Login() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const { login } = useAuth();
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (!username || !password) {
+            setError('Por favor ingrese ambos campos.');
+            return;
+        }
+
+        fetch('http://localhost:3001/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la autenticación');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Autenticación exitosa', data);
+            login();  // Actualiza el estado de autenticación
+        })
+        .catch(error => {
+            console.error('Error al autenticar:', error);
+            setError('Error en la autenticación');
+        });
+    };
+
+    return (
+        <section className="content">
+            <h2>Acceso de Usuarios</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="username">Usuario:</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="password">Contraseña:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+                <button type="submit">Ingresar</button>
+                {error && <p>{error}</p>}
+            </form>
+        </section>
+    );
+}
+
+export default Login;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Login\Login.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\models\cliente.js
+// src/models/Cliente.js
+const mongoose = require('mongoose');
+
+const clienteSchema = new mongoose.Schema({
+  nombre: String,
+  email: String,
+  // Otros campos
+});
+
+const Cliente = mongoose.model('Cliente', clienteSchema);
+
+module.exports = Cliente;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\models\cliente.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\models\models.js
+const mongoose = require('mongoose');
+
+// Cliente Schema
+const clienteSchema = new mongoose.Schema({
+  nombre: String,
+  direccion: String,
+  metodoPago: { type: String, enum: ['Efectivo', 'PSE'] }
+});
+
+// Pedido Schema
+const pedidoSchema = new mongoose.Schema({
+  idCliente: { type: mongoose.Schema.Types.ObjectId, ref: 'Cliente' },
+  idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
+  estadoPedido: String,
+  metodoPago: { type: String, enum: ['Efectivo', 'Tarjeta'] }
+});
+
+// Factura Schema
+const facturaSchema = new mongoose.Schema({
+  idPedido: { type: mongoose.Schema.Types.ObjectId, ref: 'Pedido' },
+  totalPagar: Number
+});
+
+// Inventario Schema
+const inventarioSchema = new mongoose.Schema({
+  idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
+  cantidad: Number
+});
+
+// Cafe Schema
+const cafeSchema = new mongoose.Schema({
+  nombreCafe: String,
+  precio: Number,
+  tipo: String
+});
+
+const Cliente = mongoose.model('Cliente', clienteSchema);
+const Pedido = mongoose.model('Pedido', pedidoSchema);
+const Factura = mongoose.model('Factura', facturaSchema);
+const Inventario = mongoose.model('Inventario', inventarioSchema);
+const Cafe = mongoose.model('Cafe', cafeSchema);
+
+module.exports = { Cliente, Pedido, Factura, Inventario, Cafe };
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\models\models.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\NavBar\NavBar.js
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+function NavBar() {
+    return (
+        <nav>
+            <Link to="/">Inicio</Link>
+            <Link to="/productos">Productos</Link>
+            <Link to="/acceso">Acceso de Usuarios</Link>
+        </nav>
+    );
+}
+
+export default NavBar;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\NavBar\NavBar.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\PrivadaComponent\PrivadaComponent.js
+// src/components/PrivadaComponent/PrivadaComponent.js
+import React from 'react';
+
+function PrivadaComponent() {
+    return <div>Este es un componente privado</div>;
+}
+
+export default PrivadaComponent;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\PrivadaComponent\PrivadaComponent.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Product\Product.js
+// src/components/Products/Products.js
+import React, { useEffect, useState } from 'react';
+
+function Products() {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:3001/cafes')
+            .then(response => response.json())
+            .then(data => setProducts(data))
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
+
+    return (
+        <section className="content">
+            <h2>Nuestros Productos</h2>
+            {products.map((product, index) => (
+                <div className="product" key={index}>
+                    <img src={`path_to_image/${product.image}`} alt={product.nombreCafe} />
+                    <h3>{product.nombreCafe}</h3>
+                    <p>Precio: {product.precio} COP</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+            ))}
+        </section>
+    );
+}
+
+export default Products;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Product\Product.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Products\Products.js
+import React, { useEffect, useState } from 'react';
+
+function Products() {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch('http://localhost:3001/cafes')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setProducts(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setError(error);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <p>Cargando...</p>;
+    if (error) return <p>Error al cargar los datos.</p>;
+
+    return (
+        <section className="content">
+            <h2>Nuestros Productos</h2>
+            {products.map((product, index) => (
+                <div className="product" key={index}>
+                    <img src={`path_to_image/${product.image}`} alt={product.nombreCafe} />
+                    <h3>{product.nombreCafe}</h3>
+                    <p>Precio: {product.precio} COP</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+            ))}
+        </section>
+    );
+}
+
+export default Products;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Products\Products.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\db\db.js
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/jencafe', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    console.log('Connected to MongoDB');
+});
+
+module.exports = mongoose;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\db\db.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\db\server.js
+// src/db/server.js
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoose = require('./db');  // Aquí estás importando la configuración de mongoose
+const { Cliente, Pedido, Factura, Inventario, Cafe } = require('./models');  // Importa los modelos correctamente
+
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Rutas de tu API
+app.get('/clientes', async (req, res) => {
+    try {
+        const clientes = await Cliente.find();
+        res.json(clientes);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+app.get('/cafes', async (req, res) => {
+    try {
+      const cafes = await Cafe.find();
+      res.json(cafes);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  });
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    // Lógica de autenticación
+    // Supongamos que es un login sencillo para este ejemplo
+    if (username === 'admin' && password === 'admin') {
+        res.json({ message: 'Login successful' });
+    } else {
+        res.status(401).json({ message: 'Invalid credentials' });
+    }
+});
+
+app.listen(3001, () => {
+    console.log('Servidor corriendo en http://localhost:3001');
+});
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\db\server.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\App.js
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Header from './components/Header/Header';
+import NavBar from './components/NavBar/NavBar';
+import Home from './components/Home/Home';
+import Products from './components/Products/Products';
+import Login from './components/Login/Login';
+import PrivadaComponent from './components/PrivadaComponent/PrivadaComponent'; // Importa el componente privado
+import { useAuth } from './context/AuthContext';
+import './App.css';
+
+function PrivateRoute({ children }) {
+    const { isAuthenticated } = useAuth();
+    return isAuthenticated ? children : <Navigate to="/acceso" />;
+}
+
+function App() {
+    return (
+        <Router>
+            <Header />
+            <NavBar />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/productos" element={<Products />} />
+                <Route path="/acceso" element={<Login />} />
+                <Route path="/privada" element={
+                    <PrivateRoute>
+                        <PrivadaComponent />
+                    </PrivateRoute>
+                } />
+            </Routes>
+        </Router>
+    );
+}
+
+export default App;
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\App.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\index.js
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\index.js
+

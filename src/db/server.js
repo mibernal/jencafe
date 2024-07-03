@@ -1,83 +1,46 @@
+// src/db/server.js
 const express = require('express');
-const mongoose = require('./db');
-const { Cliente, Pedido, Factura, Inventario, Cafe } = require('./models');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoose = require('./db');  // Aquí estás importando la configuración de mongoose
+const { Cliente, Pedido, Factura, Inventario, Cafe } = require('./models');  // Importa los modelos correctamente
 
 const app = express();
-app.use(express.json());
 
-// CRUD para Clientes
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Crear Cliente
-app.post('/clientes', async (req, res) => {
-  const cliente = new Cliente(req.body);
-  await cliente.save();
-  res.status(201).send(cliente);
-});
-
-// Leer todos los Clientes
+// Rutas de tu API
 app.get('/clientes', async (req, res) => {
-  const clientes = await Cliente.find();
-  res.send(clientes);
+    try {
+        const clientes = await Cliente.find();
+        res.json(clientes);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 
-// Leer un Cliente por ID
-app.get('/clientes/:id', async (req, res) => {
-  const cliente = await Cliente.findById(req.params.id);
-  if (!cliente) return res.status(404).send();
-  res.send(cliente);
+app.get('/cafes', async (req, res) => {
+    try {
+      const cafes = await Cafe.find();
+      res.json(cafes);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  });
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    // Lógica de autenticación
+    // Supongamos que es un login sencillo para este ejemplo
+    if (username === 'admin' && password === 'admin') {
+        res.json({ message: 'Login successful' });
+    } else {
+        res.status(401).json({ message: 'Invalid credentials' });
+    }
 });
 
-// Actualizar Cliente
-app.put('/clientes/:id', async (req, res) => {
-  const cliente = await Cliente.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-  if (!cliente) return res.status(404).send();
-  res.send(cliente);
-});
-
-// Eliminar Cliente
-app.delete('/clientes/:id', async (req, res) => {
-  const cliente = await Cliente.findByIdAndDelete(req.params.id);
-  if (!cliente) return res.status(404).send();
-  res.send(cliente);
-});
-
-// CRUD para Inventario
-
-// Crear Inventario
-app.post('/inventarios', async (req, res) => {
-  const inventario = new Inventario(req.body);
-  await inventario.save();
-  res.status(201).send(inventario);
-});
-
-// Leer todos los Inventarios
-app.get('/inventarios', async (req, res) => {
-  const inventarios = await Inventario.find().populate('idCafe');
-  res.send(inventarios);
-});
-
-// Leer un Inventario por ID
-app.get('/inventarios/:id', async (req, res) => {
-  const inventario = await Inventario.findById(req.params.id).populate('idCafe');
-  if (!inventario) return res.status(404).send();
-  res.send(inventario);
-});
-
-// Actualizar Inventario
-app.put('/inventarios/:id', async (req, res) => {
-  const inventario = await Inventario.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-  if (!inventario) return res.status(404).send();
-  res.send(inventario);
-});
-
-// Eliminar Inventario
-app.delete('/inventarios/:id', async (req, res) => {
-  const inventario = await Inventario.findByIdAndDelete(req.params.id);
-  if (!inventario) return res.status(404).send();
-  res.send(inventario);
-});
-
-// Iniciar el servidor
 app.listen(3001, () => {
-  console.log('Server is running on port 3001');
+    console.log('Servidor corriendo en http://localhost:3001');
 });
