@@ -11,7 +11,7 @@ const clienteSchema = new mongoose.Schema({
 const pedidoSchema = new mongoose.Schema({
   idCliente: { type: mongoose.Schema.Types.ObjectId, ref: 'Cliente' },
   idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
-  estadoPedido: String,
+  estadoPedido: { type: String, enum: ['Pendiente', 'Completado'] },
   metodoPago: { type: String, enum: ['Efectivo', 'Tarjeta'] }
 });
 
@@ -31,7 +31,7 @@ const inventarioSchema = new mongoose.Schema({
 const cafeSchema = new mongoose.Schema({
   nombreCafe: String,
   precio: Number,
-  tipo: String
+  tipo: { type: String, enum: ['Arábica', 'Robusta'] }
 });
 
 const Cliente = mongoose.model('Cliente', clienteSchema);

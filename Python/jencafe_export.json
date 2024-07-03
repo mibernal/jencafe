@@ -1,0 +1,94 @@
+{
+    "cafes": [
+        {
+            "_id": "6685cd13c1462d78b753c2eb",
+            "nombreCafe": "Caf\u00e9 Especial",
+            "precio": 10000,
+            "tipo": "Ar\u00e1bica"
+        },
+        {
+            "_id": "6685cd13c1462d78b753c2ec",
+            "nombreCafe": "Caf\u00e9 Tradicional",
+            "precio": 8000,
+            "tipo": "Robusta"
+        },
+        {
+            "_id": "6685cd29c1462d78b753c2ef",
+            "nombreCafe": "Caf\u00e9 Especial",
+            "precio": 10000,
+            "tipo": "Ar\u00e1bica"
+        },
+        {
+            "_id": "6685cd29c1462d78b753c2f0",
+            "nombreCafe": "Caf\u00e9 Tradicional",
+            "precio": 8000,
+            "tipo": "Robusta"
+        }
+    ],
+    "pedidos": [
+        {
+            "_id": "6685cd64c1462d78b753c2f3",
+            "idCliente": "60c72b2f9b1e8a0d4cdddee3",
+            "idCafe": "60c72b2f9b1e8a0d4cdddee1",
+            "estadoPedido": "Pendiente",
+            "metodoPago": "Efectivo"
+        },
+        {
+            "_id": "6685cd64c1462d78b753c2f4",
+            "idCliente": "60c72b2f9b1e8a0d4cdddee4",
+            "idCafe": "60c72b2f9b1e8a0d4cdddee2",
+            "estadoPedido": "Completado",
+            "metodoPago": "Tarjeta"
+        }
+    ],
+    "facturas": [
+        {
+            "_id": "6685cd64c1462d78b753c2f5",
+            "idPedido": "60c72b2f9b1e8a0d4cdddee5",
+            "totalPagar": 10000
+        },
+        {
+            "_id": "6685cd64c1462d78b753c2f6",
+            "idPedido": "60c72b2f9b1e8a0d4cdddee6",
+            "totalPagar": 8000
+        }
+    ],
+    "clientes": [
+        {
+            "_id": "6685cd13c1462d78b753c2e9",
+            "nombre": "Juan Perez",
+            "direccion": "Calle 123",
+            "metodoPago": "Efectivo"
+        },
+        {
+            "_id": "6685cd13c1462d78b753c2ea",
+            "nombre": "Maria Gomez",
+            "direccion": "Avenida 456",
+            "metodoPago": "PSE"
+        },
+        {
+            "_id": "6685cd23c1462d78b753c2ed",
+            "nombre": "Juan Perez",
+            "direccion": "Calle 123",
+            "metodoPago": "Efectivo"
+        },
+        {
+            "_id": "6685cd23c1462d78b753c2ee",
+            "nombre": "Maria Gomez",
+            "direccion": "Avenida 456",
+            "metodoPago": "PSE"
+        }
+    ],
+    "inventario": [
+        {
+            "_id": "6685cd64c1462d78b753c2f1",
+            "idCafe": "60c72b2f9b1e8a0d4cdddee1",
+            "cantidad": 50
+        },
+        {
+            "_id": "6685cd64c1462d78b753c2f2",
+            "idCafe": "60c72b2f9b1e8a0d4cdddee2",
+            "cantidad": 100
+        }
+    ]
+}

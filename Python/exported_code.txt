@@ -350,7 +350,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('./db');  // Aquí estás importando la configuración de mongoose
-const { Cliente, Pedido, Factura, Inventario, Cafe } = require('./models');  // Importa los modelos correctamente
+const { Cliente, Pedido, Factura, Inventario, Cafe } = require('../components/models');
 
 const app = express();
 
