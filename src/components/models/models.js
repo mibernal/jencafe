@@ -1,43 +1,59 @@
+// src/components/models/models.js
 const mongoose = require('mongoose');
 
-// Cliente Schema
+// Definición de esquemas
+
+// Schema de Cliente
 const clienteSchema = new mongoose.Schema({
-  nombre: String,
-  direccion: String,
-  metodoPago: { type: String, enum: ['Efectivo', 'PSE'] }
+    nombre: String,
+    direccion: String,
+    metodoPago: { type: String, enum: ['Efectivo', 'PSE'] },
+    email: String,
 });
 
-// Pedido Schema
+// Schema de Pedido
 const pedidoSchema = new mongoose.Schema({
-  idCliente: { type: mongoose.Schema.Types.ObjectId, ref: 'Cliente' },
-  idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
-  estadoPedido: { type: String, enum: ['Pendiente', 'Completado'] },
-  metodoPago: { type: String, enum: ['Efectivo', 'Tarjeta'] }
+    clienteId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cliente' },
+    cafeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
+    estadoPedido: { type: String, enum: ['Pendiente', 'Completado'] },
+    metodoPago: { type: String, enum: ['Efectivo', 'Tarjeta'] }
 });
 
-// Factura Schema
+// Schema de Factura
 const facturaSchema = new mongoose.Schema({
-  idPedido: { type: mongoose.Schema.Types.ObjectId, ref: 'Pedido' },
-  totalPagar: Number
+    pedidoId: { type: mongoose.Schema.Types.ObjectId, ref: 'Pedido' },
+    totalPagar: Number
 });
 
-// Inventario Schema
+// Schema de Inventario
 const inventarioSchema = new mongoose.Schema({
-  idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
-  cantidad: Number
+    cafeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
+    cantidad: Number
 });
 
-// Cafe Schema
+// Schema de Cafe
 const cafeSchema = new mongoose.Schema({
-  nombreCafe: String,
-  precio: Number,
-  tipo: { type: String, enum: ['Arábica', 'Robusta'] }
+    nombreCafe: String,
+    precio: Number,
+    tipo: { type: String, enum: ['Arábica', 'Robusta'] }
 });
 
+// Schema de Producto
+const productoSchema = new mongoose.Schema({
+    nombre: String,
+    descripcion: String,
+    precio: Number,
+    categoria: String,
+    stock: Number,
+    imagen: String
+});
+
+// Definición de modelos
+const Producto = mongoose.model('Producto', productoSchema);
 const Cliente = mongoose.model('Cliente', clienteSchema);
 const Pedido = mongoose.model('Pedido', pedidoSchema);
 const Factura = mongoose.model('Factura', facturaSchema);
 const Inventario = mongoose.model('Inventario', inventarioSchema);
 const Cafe = mongoose.model('Cafe', cafeSchema);
 
-module.exports = { Cliente, Pedido, Factura, Inventario, Cafe };
+module.exports = { Cliente, Pedido, Factura, Inventario, Cafe, Producto };

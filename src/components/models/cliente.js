@@ -2,11 +2,27 @@
 const mongoose = require('mongoose');
 
 const clienteSchema = new mongoose.Schema({
-  nombre: String,
-  direccion: String,
-  metodoPago: { type: String, enum: ['Efectivo', 'PSE'] },
-  // Añadir más campos según la estructura de tu base de datos
-  email: String, // Añadido para reflejar un campo de email según lo sugerido
+  nombre: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  direccion: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  metodoPago: {
+    type: String,
+    enum: ['Efectivo', 'PSE'],
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    match: [/.+@.+\..+/, 'Please enter a valid email address']
+  }
 });
 
 const Cliente = mongoose.model('Cliente', clienteSchema);

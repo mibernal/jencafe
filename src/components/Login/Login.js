@@ -1,70 +1,53 @@
-
+// src/components/Login/Login.js
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext'; // Ajusta la ruta según la ubicación de AuthContext
+import './Login.css'; // Añadir archivo CSS para los estilos
 
-function Login() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const { login } = useAuth();
+const Login = () => {
+  const { login } = useAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        if (!username || !password) {
-            setError('Por favor ingrese ambos campos.');
-            return;
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const success = await login(username, password);
+      if (!success) {
+        setError('Credenciales incorrectas');
+      } else {
+        setError(null);
+      }
+    } catch (error) {
+      setError('Error en la autenticación');
+    }
+  };
 
-        fetch('http://localhost:3001/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la autenticación');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Autenticación exitosa', data);
-            login();  // Actualiza el estado de autenticación
-        })
-        .catch(error => {
-            console.error('Error al autenticar:', error);
-            setError('Error en la autenticación');
-        });
-    };
-
-    return (
-        <section className="content">
-            <h2>Acceso de Usuarios</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="username">Usuario:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Contraseña:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <button type="submit">Ingresar</button>
-                {error && <p>{error}</p>}
-            </form>
-        </section>
-    );
-}
+  return (
+    <div className="login-container">
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        {error && <p className="error">{error}</p>}
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
+};
 
 export default Login;

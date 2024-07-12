@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './Clientes.css';
 
 function Clientes() {
   const [clientes, setClientes] = useState([]);
@@ -7,23 +8,26 @@ function Clientes() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/clientes')
-      .then(response => {
+    const fetchClientes = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/clientes');
         setClientes(response.data);
         setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching data:', error);
         setError(error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchClientes();
   }, []);
 
   if (loading) return <p>Cargando...</p>;
-  if (error) return <p>Error al cargar los datos.</p>;
+  if (error) return <p>Error al cargar los datos: {error.message}</p>;
 
   return (
-    <div>
+    <div className="clientes-container">
       <h2>Clientes</h2>
       <ul>
         {clientes.map(cliente => (

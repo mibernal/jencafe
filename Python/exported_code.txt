@@ -1,6 +1,33 @@
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Clientes\Clientes.css
+/* src/components/Clientes/Clientes.css */
+.clientes-container {
+  padding: 20px;
+}
+
+.clientes-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.clientes-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.clientes-container li {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Clientes\Clientes.css
+
 // Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Clientes\Clientes.js
+// src/components/Clientes/Clientes.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './Clientes.css'; // Asegúrate de tener un archivo CSS para estilizar el componente
 
 function Clientes() {
   const [clientes, setClientes] = useState([]);
@@ -8,23 +35,26 @@ function Clientes() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/clientes')
-      .then(response => {
+    const fetchClientes = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/clientes');
         setClientes(response.data);
         setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching data:', error);
         setError(error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchClientes();
   }, []);
 
   if (loading) return <p>Cargando...</p>;
-  if (error) return <p>Error al cargar los datos.</p>;
+  if (error) return <p>Error al cargar los datos: {error.message}</p>;
 
   return (
-    <div>
+    <div className="clientes-container">
       <h2>Clientes</h2>
       <ul>
         {clientes.map(cliente => (
@@ -39,113 +69,183 @@ export default Clientes;
 
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Clientes\Clientes.js
 
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Header\Header.css
+/* src/components/Header/Header.css */
+.header {
+  background-color: #f8f9fa;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Header\Header.css
+
 // Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Header\Header.js
+// src/components/Header/Header.js
 import React from 'react';
+import './Header.css'; // Añadir archivo CSS para los estilos
 
 function Header() {
-    return (
-        <header>
-            <h1>JENCAFE - Tienda Virtual de Café</h1>
-        </header>
-    );
+  return (
+    <header className="header">
+      <h1>JENCAFE - Tienda Virtual de Café</h1>
+    </header>
+  );
 }
 
 export default Header;
 
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Header\Header.js
 
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Home\Home.css
+/* src/components/Home/Home.css */
+.home-content {
+  padding: 20px;
+  text-align: center;
+}
+
+.home-content h2 {
+  margin-bottom: 20px;
+}
+
+.home-content p {
+  margin-bottom: 10px;
+}
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Home\Home.css
+
 // Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Home\Home.js
+// src/components/Home/Home.js
 import React from 'react';
+import './Home.css'; // Añadir archivo CSS para los estilos
 
 function Home() {
-    return (
-        <section className="content">
-            <h2>Bienvenido a JENCAFE</h2>
-            <p>
-                Descubre los mejores productos de café seleccionados especialmente para ti. Nuestra tienda virtual ofrece una
-                variedad de cafés de alta calidad, desde los más tradicionales hasta los más exquisitos.
-            </p>
-            <p>
-                Navega por nuestras categorías y encuentra el café perfecto para cada ocasión. ¡Disfruta de una experiencia
-                única con el mejor café!
-            </p>
-        </section>
-    );
+  return (
+    <section className="home-content">
+      <h2>Bienvenido a JENCAFE</h2>
+      <p>
+        Descubre los mejores productos de café seleccionados especialmente para ti. Nuestra tienda virtual ofrece una
+        variedad de cafés de alta calidad, desde los más tradicionales hasta los más exquisitos.
+      </p>
+      <p>
+        Navega por nuestras categorías y encuentra el café perfecto para cada ocasión. ¡Disfruta de una experiencia
+        única con el mejor café!
+      </p>
+    </section>
+  );
 }
 
 export default Home;
 
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Home\Home.js
 
-// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Login\Login.js
-
-import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-
-function Login() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const { login } = useAuth();
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        if (!username || !password) {
-            setError('Por favor ingrese ambos campos.');
-            return;
-        }
-
-        fetch('http://localhost:3001/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la autenticación');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Autenticación exitosa', data);
-            login();  // Actualiza el estado de autenticación
-        })
-        .catch(error => {
-            console.error('Error al autenticar:', error);
-            setError('Error en la autenticación');
-        });
-    };
-
-    return (
-        <section className="content">
-            <h2>Acceso de Usuarios</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="username">Usuario:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Contraseña:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <button type="submit">Ingresar</button>
-                {error && <p>{error}</p>}
-            </form>
-        </section>
-    );
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Login\Login.css
+/* src/components/Login/Login.css */
+.login-container {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
 }
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container label {
+  margin-bottom: 5px;
+}
+
+.login-container input {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.login-container .error {
+  color: red;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.login-container button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.login-container button:hover {
+  background-color: #0056b3;
+}
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Login\Login.css
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Login\Login.js
+// src/components/Login/Login.js
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext'; // Ajusta la ruta según la ubicación de AuthContext
+import './Login.css'; // Añadir archivo CSS para los estilos
+
+const Login = () => {
+  const { login } = useAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const success = await login(username, password);
+      if (!success) {
+        setError('Credenciales incorrectas');
+      } else {
+        setError(null);
+      }
+    } catch (error) {
+      setError('Error en la autenticación');
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        {error && <p className="error">{error}</p>}
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
+};
 
 export default Login;
 
@@ -156,9 +256,27 @@ export default Login;
 const mongoose = require('mongoose');
 
 const clienteSchema = new mongoose.Schema({
-  nombre: String,
-  email: String,
-  // Otros campos
+  nombre: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  direccion: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  metodoPago: {
+    type: String,
+    enum: ['Efectivo', 'PSE'],
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    match: [/.+@.+\..+/, 'Please enter a valid email address']
+  }
 });
 
 const Cliente = mongoose.model('Cliente', clienteSchema);
@@ -168,49 +286,63 @@ module.exports = Cliente;
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\models\cliente.js
 
 // Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\models\models.js
+// src/components/models/models.js
 const mongoose = require('mongoose');
 
 // Cliente Schema
 const clienteSchema = new mongoose.Schema({
-  nombre: String,
-  direccion: String,
-  metodoPago: { type: String, enum: ['Efectivo', 'PSE'] }
+    nombre: String,
+    direccion: String,
+    metodoPago: { type: String, enum: ['Efectivo', 'PSE'] },
+    email: String,
 });
 
 // Pedido Schema
 const pedidoSchema = new mongoose.Schema({
-  idCliente: { type: mongoose.Schema.Types.ObjectId, ref: 'Cliente' },
-  idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
-  estadoPedido: String,
-  metodoPago: { type: String, enum: ['Efectivo', 'Tarjeta'] }
+    idCliente: { type: mongoose.Schema.Types.ObjectId, ref: 'Cliente' },
+    idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
+    estadoPedido: { type: String, enum: ['Pendiente', 'Completado'] },
+    metodoPago: { type: String, enum: ['Efectivo', 'Tarjeta'] }
 });
 
 // Factura Schema
 const facturaSchema = new mongoose.Schema({
-  idPedido: { type: mongoose.Schema.Types.ObjectId, ref: 'Pedido' },
-  totalPagar: Number
+    idPedido: { type: mongoose.Schema.Types.ObjectId, ref: 'Pedido' },
+    totalPagar: Number
 });
 
 // Inventario Schema
 const inventarioSchema = new mongoose.Schema({
-  idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
-  cantidad: Number
+    idCafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe' },
+    cantidad: Number
 });
 
 // Cafe Schema
 const cafeSchema = new mongoose.Schema({
-  nombreCafe: String,
-  precio: Number,
-  tipo: String
+    nombreCafe: String,
+    precio: Number,
+    tipo: { type: String, enum: ['Arábica', 'Robusta'] }
 });
 
+// Define el esquema para Producto
+const productoSchema = new mongoose.Schema({
+    nombre: String,
+    descripcion: String,
+    precio: Number,
+    categoria: String,
+    stock: Number,
+    imagen: String
+});
+
+const Producto = mongoose.model('Producto', productoSchema);
 const Cliente = mongoose.model('Cliente', clienteSchema);
 const Pedido = mongoose.model('Pedido', pedidoSchema);
 const Factura = mongoose.model('Factura', facturaSchema);
 const Inventario = mongoose.model('Inventario', inventarioSchema);
 const Cafe = mongoose.model('Cafe', cafeSchema);
 
-module.exports = { Cliente, Pedido, Factura, Inventario, Cafe };
+module.exports = { Cliente, Pedido, Factura, Inventario, Cafe, Producto };
+
 
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\models\models.js
 
@@ -277,8 +409,52 @@ export default Products;
 
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Product\Product.js
 
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Products\Products.css
+/* src/components/Products/Products.css */
+
+.content {
+  padding: 20px;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.product {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  max-width: 200px;
+  text-align: center;
+}
+
+.product img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Products\Products.css
+
 // Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Products\Products.js
 import React, { useEffect, useState } from 'react';
+import './Products.css'; // Asegúrate de tener un archivo CSS para estilizar el componente
 
 function Products() {
     const [products, setProducts] = useState([]);
@@ -286,38 +462,42 @@ function Products() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:3001/cafes')
-            .then(response => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/cafes');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json();
-            })
-            .then(data => {
-                setProducts(data);
+                const data = await response.json();
+                setProducts(data.cafes); // Actualizamos solo la lista de productos
                 setLoading(false);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error fetching data:', error);
                 setError(error);
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchProducts();
     }, []);
 
     if (loading) return <p>Cargando...</p>;
-    if (error) return <p>Error al cargar los datos.</p>;
+    if (error) return <p>Error al cargar los datos: {error.message}</p>;
+    if (products.length === 0) return <p>No hay productos disponibles.</p>;
 
     return (
         <section className="content">
             <h2>Nuestros Productos</h2>
-            {products.map((product, index) => (
-                <div className="product" key={index}>
-                    <img src={`path_to_image/${product.image}`} alt={product.nombreCafe} />
-                    <h3>{product.nombreCafe}</h3>
-                    <p>Precio: {product.precio} COP</p>
-                    <button>Agregar al Carrito</button>
-                </div>
-            ))}
+            <div className="product-grid">
+                {products.map((product) => (
+                    <div className="product" key={product._id}>
+                        <img src={product.imagen} alt={product.nombreCafe} />
+                        <h3>{product.nombreCafe}</h3>
+                        <p>Precio: {product.precio} COP</p>
+                        <button>Agregar al Carrito</button>
+                    </div>
+                ))}
+            </div>
         </section>
     );
 }
@@ -327,17 +507,20 @@ export default Products;
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\components\Products\Products.js
 
 // Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\db\db.js
+// src/db/db.js
 const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost:27017/jencafe', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
 });
 
 const db = mongoose.connection;
+
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-    console.log('Connected to MongoDB');
+db.once('open', () => {
+  console.log('Connected to MongoDB');
 });
 
 module.exports = mongoose;
@@ -349,8 +532,9 @@ module.exports = mongoose;
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mongoose = require('./db');  // Aquí estás importando la configuración de mongoose
-const { Cliente, Pedido, Factura, Inventario, Cafe } = require('../components/models');
+const mongoose = require('./db');
+const { Cliente, Pedido, Factura, Inventario, Cafe } = require('../components/models/models');
+const { ObjectId } = require('mongodb');
 
 const app = express();
 
@@ -358,39 +542,145 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Rutas de tu API
 app.get('/clientes', async (req, res) => {
-    try {
-        const clientes = await Cliente.find();
-        res.json(clientes);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  try {
+    const clientes = await Cliente.find();
+    res.json(clientes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 app.get('/cafes', async (req, res) => {
-    try {
-      const cafes = await Cafe.find();
-      res.json(cafes);
-    } catch (error) {
-      res.status(500).send(error);
-    }
-  });
+  try {
+    const cafes = await Cafe.find();
+    res.json(cafes);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    // Lógica de autenticación
-    // Supongamos que es un login sencillo para este ejemplo
-    if (username === 'admin' && password === 'admin') {
-        res.json({ message: 'Login successful' });
-    } else {
-        res.status(401).json({ message: 'Invalid credentials' });
-    }
+  const { username, password } = req.body;
+  if (username === 'admin' && password === 'admin') {
+    res.json({ message: 'Login successful' });
+  } else {
+    res.status(401).json({ message: 'Invalid credentials' });
+  }
 });
 
 app.listen(3001, () => {
-    console.log('Servidor corriendo en http://localhost:3001');
+  console.log('Servidor corriendo en http://localhost:3001');
 });
+
+async function insertarDocumentos() {
+  const id_de_cafe_1 = new ObjectId();
+  const id_de_cafe_2 = new ObjectId();
+  const id_de_cliente_1 = new ObjectId();
+  const id_de_cliente_2 = new ObjectId();
+  const id_de_pedido_1 = new ObjectId();
+  const id_de_factura_1 = new ObjectId();
+  const id_de_inventario_1 = new ObjectId();
+  const cafes = [
+    {
+      _id: id_de_cafe_1,
+      nombre: 'Café 1',
+      tipo: 'Arábica',
+      origen: 'Colombia',
+      precio: 10.5,
+      fechaIngreso: new Date()
+    },
+    {
+      _id: id_de_cafe_2,
+      nombre: 'Café 2',
+      tipo: 'Robusta',
+      origen: 'Brasil',
+      precio: 12.0,
+      fechaIngreso: new Date()
+    }
+  ];
+
+  const clientes = [
+    {
+      _id: id_de_cliente_1,
+      nombre: 'Cliente 1',
+      direccion: 'Dirección 1',
+      metodoPago: 'Efectivo',
+      email: 'cliente1@example.com'
+    },
+    {
+      _id: id_de_cliente_2,
+      nombre: 'Cliente 2',
+      direccion: 'Dirección 2',
+      metodoPago: 'PSE',
+      email: 'cliente2@example.com'
+    }
+  ];
+
+  const pedidos = [
+    {
+      _id: id_de_pedido_1,
+      clienteId: id_de_cliente_1,
+      cafeId: id_de_cafe_1,
+      cantidad: 2,
+      fechaPedido: new Date()
+    }
+  ];
+
+  const facturas = [
+    {
+      _id: id_de_factura_1,
+      pedidoId: id_de_pedido_1,
+      montoTotal: 21.0,
+      fechaFactura: new Date()
+    }
+  ];
+
+  const inventarios = [
+    {
+      _id: id_de_inventario_1,
+      cafeId: id_de_cafe_1,
+      stock: 100
+    }
+  ];
+
+  try {
+    await Cliente.insertMany(clientes);
+    console.log('Clientes insertados correctamente');
+  } catch (error) {
+    console.error('Error al insertar clientes:', error);
+  }
+
+  try {
+    await Cafe.insertMany(cafes);
+    console.log('Cafés insertados correctamente');
+  } catch (error) {
+    console.error('Error al insertar cafés:', error);
+  }
+
+  try {
+    await Pedido.insertMany(pedidos);
+    console.log('Pedidos insertados correctamente');
+  } catch (error) {
+    console.error('Error al insertar pedidos:', error);
+  }
+
+  try {
+    await Factura.insertMany(facturas);
+    console.log('Facturas insertadas correctamente');
+  } catch (error) {
+    console.error('Error al insertar facturas:', error);
+  }
+
+  try {
+    await Inventario.insertMany(inventarios);
+    console.log('Inventarios insertados correctamente');
+  } catch (error) {
+    console.error('Error al insertar inventarios:', error);
+  }
+}
+
+insertarDocumentos();
 
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\db\server.js
 
@@ -436,14 +726,57 @@ export default App;
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\App.js
 
 // Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\index.js
-// src/index.js
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import ReactDOM from 'react-dom';
 import App from './App';
+import { AuthProvider } from './context/AuthContext'; // Ajusta la ruta según la ubicación de AuthContext
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+ReactDOM.render(
+    <React.StrictMode>
+        <AuthProvider>
+            <App />
+        </AuthProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
+);
 
 // End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\index.js
+
+// Start of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\context/AuthContext.js
+import React, { createContext, useContext, useState } from 'react';
+
+// Crear el contexto
+const AuthContext = createContext();
+
+// Hook personalizado para usar el contexto de autenticación
+export const useAuth = () => {
+    return useContext(AuthContext);
+};
+
+// Proveedor del contexto
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+
+    const login = (username, password) => {
+        // Lógica de autenticación
+        if (username === 'admin' && password === 'admin') {
+            setUser({ username });
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const logout = () => {
+        setUser(null);
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+// End of C:\Users\info\OneDrive\Escritorio\JENN\Pagina Jen\jencafe\src\context/AuthContext.js
 
